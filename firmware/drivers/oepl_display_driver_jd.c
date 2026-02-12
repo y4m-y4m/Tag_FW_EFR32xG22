@@ -257,6 +257,26 @@ static void display_reinit(void)
     EMIT_INSTRUCTION_STATIC_DATA(0xE9, {0x01});
     EMIT_INSTRUCTION_STATIC_DATA(0x30, {0x08});
     oepl_display_driver_wait(300);
+  } else if(params->x_res_effective == 400 && params->y_res_effective == 300) {
+    // From GoodDisplay GDEM042F52 ESP32 Sample Code (EPD_init_Fast)
+    //   https://www.good-display.com/product/564.html
+    oepl_display_driver_common_pulse_reset(100, 50, 50);
+    EMIT_INSTRUCTION_STATIC_DATA(0x4D, {0x78});
+    EMIT_INSTRUCTION_STATIC_DATA(0x00, {0x0F,0x29});
+    EMIT_INSTRUCTION_STATIC_DATA(0x01, {0x07,0x00});
+    EMIT_INSTRUCTION_STATIC_DATA(0x03, {0x10,0x54, 0x44});
+    EMIT_INSTRUCTION_STATIC_DATA(0x06, {0x0F,0x0A,0x2F,0x25,0x22,0x2E,0x21});
+    EMIT_INSTRUCTION_STATIC_DATA(0x50, {0x37});
+    EMIT_INSTRUCTION_VAR_DATA(EPD_CMD_RESOLUTION_SETTING, {params->x_res_effective >> 8, params->x_res_effective & 0xFF, params->y_res_effective >> 8, params->y_res_effective & 0xFF});
+    EMIT_INSTRUCTION_STATIC_DATA(0xE3, {0x22});
+    EMIT_INSTRUCTION_STATIC_DATA(0xB6, {0x6F});
+    EMIT_INSTRUCTION_STATIC_DATA(0xB4, {0xD0});
+    EMIT_INSTRUCTION_STATIC_DATA(0xE9, {0x01});
+    EMIT_INSTRUCTION_STATIC_DATA(0x30, {0x08});
+    EMIT_INSTRUCTION_NO_DATA(0x04);
+    EMIT_INSTRUCTION_STATIC_DATA(0xE0, {0x02});
+    EMIT_INSTRUCTION_STATIC_DATA(0xE6, {0x5A});
+    EMIT_INSTRUCTION_STATIC_DATA(0xA5, {0x00});
   } else if(params->x_res_effective == 800 && params->y_res_effective == 480) {
     // From Waveshare 800x480 sample
     //   https://github.com/waveshareteam/e-Paper/blob/master/E-paper_Separate_Program/7in5_e-Paper_H/ESP32/EPD_7in5h.cpp
